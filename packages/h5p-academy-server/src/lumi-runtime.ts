@@ -1,4 +1,4 @@
-import { access, mkdir, writeFile } from 'fs/promises';
+import { access, mkdir, readFile, writeFile } from 'fs/promises';
 import path from 'path';
 import express, { NextFunction, Request, Response } from 'express';
 
@@ -7,6 +7,10 @@ import * as H5P from '@lumieducation/h5p-server';
 
 import type { AcademyAuthoringScope, AcademyH5pRuntime } from './app';
 import { AcademyPermissionSystem } from './academy-permission-system';
+import {
+    makeEditorClientFrameSafe,
+    makeHtmlWidgetFrameSafe
+} from './frame-safe-editor';
 import { AcademyUser, createRuntimeAdapter } from './runtime';
 
 export interface LumiRuntimeOptions {
@@ -101,6 +105,38 @@ export async function createLumiRuntime(
                 changeLanguage: async () => undefined
             };
             next();
+        }
+    );
+    ajaxRouter.get(
+        '/editor/scripts/h5peditor.js',
+        async (_request: Request, response: Response, next: NextFunction) => {
+            try {
+                const source = await readFile(
+                    path.join(assetsRoot, 'editor/scripts/h5peditor.js'),
+                    'utf8'
+                );
+                response.type('application/javascript').send(
+                    makeEditorClientFrameSafe(source)
+                );
+            } catch (error) {
+                next(error);
+            }
+        }
+    );
+    ajaxRouter.get(
+        '/editor/scripts/h5peditor-html.js',
+        async (_request: Request, response: Response, next: NextFunction) => {
+            try {
+                const source = await readFile(
+                    path.join(assetsRoot, 'editor/scripts/h5peditor-html.js'),
+                    'utf8'
+                );
+                response.type('application/javascript').send(
+                    makeHtmlWidgetFrameSafe(source)
+                );
+            } catch (error) {
+                next(error);
+            }
         }
     );
     ajaxRouter.use(nativeRouter);

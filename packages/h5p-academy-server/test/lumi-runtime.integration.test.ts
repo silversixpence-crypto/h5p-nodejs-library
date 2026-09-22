@@ -49,6 +49,10 @@ describe('native Lumi integration', () => {
         const editor = await scoped(request(app).get('/editor/new-content'));
         expect(editor.status).toBe(200);
         expect(editor.text).toContain('window.H5PIntegration');
+        expect(editor.text).toContain('academyParentIntegration');
+        expect(editor.text).not.toContain(
+            'window.H5PIntegration = parent.H5PIntegration ||'
+        );
         expect(editor.text).toContain('class="h5p-editor"');
         expect(editor.text).toContain('data-ledgerbrain-h5p-theme');
         expect(editor.text).toContain('border-radius: 999px');
@@ -58,5 +62,18 @@ describe('native Lumi integration', () => {
         );
         expect(asset.status).toBe(200);
         expect(asset.headers['content-type']).toContain('javascript');
+        expect(asset.text).toContain('academyParentValue');
+        expect(asset.text).not.toContain(
+            '{}, window.parent.H5PEditor)'
+        );
+
+        const htmlWidget = await scoped(
+            request(app).get('/h5p/editor/scripts/h5peditor-html.js')
+        );
+        expect(htmlWidget.status).toBe(200);
+        expect(htmlWidget.text).toContain('academyViewport');
+        expect(htmlWidget.text).not.toContain(
+            'const { innerHeight, innerWidth } = window.parent;'
+        );
     });
 });

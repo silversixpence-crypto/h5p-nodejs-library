@@ -2,6 +2,7 @@ import type { RequestHandler } from 'express';
 
 import type { AcademyAuthoringScope, AcademyH5pRuntime } from './app';
 import { applyLedgerBrainEditorTheme } from './editor-theme';
+import { makeEditorHtmlFrameSafe } from './frame-safe-editor';
 
 interface H5pEditorPort {
     contentStorage: {
@@ -68,7 +69,9 @@ export function createRuntimeAdapter(
                 'en',
                 new AcademyUser(scope)
             );
-            return applyLedgerBrainEditorTheme(html);
+            return makeEditorHtmlFrameSafe(
+                applyLedgerBrainEditorTheme(html)
+            );
         },
         async saveContent(contentId, body, scope) {
             const payload = body as EditorPayload;
