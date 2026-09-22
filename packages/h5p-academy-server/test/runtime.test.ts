@@ -7,6 +7,7 @@ const scope: AcademyAuthoringScope = {
     contentId: 'content_1',
     draftId: 'draft_1',
     lessonId: 'lesson_1',
+    parentOrigin: 'https://academy.example',
     sessionId: 'session_1',
     workspaceId: 'workspace_1'
 };

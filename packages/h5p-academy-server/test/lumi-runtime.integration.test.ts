@@ -13,7 +13,8 @@ const trustedHeaders = {
     'x-academy-draft-id': 'draft_1',
     'x-academy-lesson-id': 'lesson_1',
     'x-academy-block-id': 'block_1',
-    'x-academy-content-id': 'new-content'
+    'x-academy-content-id': 'new-content',
+    'x-academy-parent-origin': 'https://academy.example'
 };
 
 function scoped(testRequest: request.Test): request.Test {

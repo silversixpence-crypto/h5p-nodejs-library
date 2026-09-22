@@ -37,6 +37,7 @@ export interface AcademyAuthoringScope {
     actorId: string;
     draftId: string;
     lessonId: string;
+    parentOrigin: string;
     blockId: string;
     contentId: string;
 }
@@ -47,6 +48,7 @@ const scopeHeaders = {
     actorId: 'x-academy-actor-id',
     draftId: 'x-academy-draft-id',
     lessonId: 'x-academy-lesson-id',
+    parentOrigin: 'x-academy-parent-origin',
     blockId: 'x-academy-block-id',
     contentId: 'x-academy-content-id'
 } as const;
@@ -221,6 +223,7 @@ export function createAcademyH5pApp(
                 title: metadata.title,
                 library: metadata.mainLibrary
             });
+            const targetParentOrigin = scope.parentOrigin || parentOrigin;
             response
                 .status(200)
                 .type('html')
@@ -228,7 +231,7 @@ export function createAcademyH5pApp(
                 .set('Referrer-Policy', 'same-origin')
                 .send(
                     `<!doctype html><html><body><script>window.parent.postMessage(${message}, ${serializeForInlineScript(
-                        parentOrigin
+                        targetParentOrigin
                     )});</script></body></html>`
                 );
         })

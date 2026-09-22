@@ -9,7 +9,8 @@ const trustedHeaders = {
     'x-academy-draft-id': 'draft_1',
     'x-academy-lesson-id': 'lesson_1',
     'x-academy-block-id': 'block_1',
-    'x-academy-content-id': 'new-content'
+    'x-academy-content-id': 'new-content',
+    'x-academy-parent-origin': 'https://workspace.example'
 };
 
 function withTrustedHeaders(testRequest: request.Test): request.Test {
@@ -132,7 +133,8 @@ describe('Academy H5P runtime', () => {
         expect(response.status).toBe(200);
         expect(response.text).toContain('academy:h5p:saved');
         expect(response.text).toContain('created-content');
-        expect(response.text).toContain('https://academy.example');
+        expect(response.text).toContain('https://workspace.example');
+        expect(response.text).not.toContain('https://academy.example');
         expect(response.headers['referrer-policy']).toBe('same-origin');
     });
 });
