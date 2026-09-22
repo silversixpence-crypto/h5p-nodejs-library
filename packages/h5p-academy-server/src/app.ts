@@ -40,6 +40,7 @@ export interface AcademyAuthoringScope {
     parentOrigin: string;
     blockId: string;
     contentId: string;
+    operationSet: 'editor' | 'admin';
 }
 
 const scopeHeaders = {
@@ -50,7 +51,8 @@ const scopeHeaders = {
     lessonId: 'x-academy-lesson-id',
     parentOrigin: 'x-academy-parent-origin',
     blockId: 'x-academy-block-id',
-    contentId: 'x-academy-content-id'
+    contentId: 'x-academy-content-id',
+    operationSet: 'x-academy-operation-set'
 } as const;
 
 function readAuthoringScope(request: Request): AcademyAuthoringScope | null {
@@ -59,7 +61,13 @@ function readAuthoringScope(request: Request): AcademyAuthoringScope | null {
         request.header(header)
     ]);
     if (entries.some(([, value]) => !value)) return null;
-    return Object.fromEntries(entries) as unknown as AcademyAuthoringScope;
+    const scope = Object.fromEntries(
+        entries
+    ) as unknown as AcademyAuthoringScope;
+    if (scope.operationSet !== 'editor' && scope.operationSet !== 'admin') {
+        return null;
+    }
+    return scope;
 }
 
 function asyncRoute(

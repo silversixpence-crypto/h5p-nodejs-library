@@ -40,10 +40,14 @@ export class AcademyUser {
     public constructor(scope: AcademyAuthoringScope) {
         this.id = scope.actorId;
         this.email = `${scope.actorId}@academy.invalid`;
+        this.operationSet = scope.operationSet;
+        this.scopedContentId = scope.contentId;
     }
 
     public readonly email: string;
     public readonly id: string;
+    public readonly operationSet: 'editor' | 'admin';
+    public readonly scopedContentId: string;
     public readonly name = 'Academy author';
     public readonly type = 'local';
 }

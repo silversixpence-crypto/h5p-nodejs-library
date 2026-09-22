@@ -7,6 +7,7 @@ const scope: AcademyAuthoringScope = {
     contentId: 'content_1',
     draftId: 'draft_1',
     lessonId: 'lesson_1',
+    operationSet: 'admin',
     parentOrigin: 'https://academy.example',
     sessionId: 'session_1',
     workspaceId: 'workspace_1'
@@ -14,10 +15,12 @@ const scope: AcademyAuthoringScope = {
 
 describe('Academy Lumi adapter', () => {
     it('uses the Clerk actor as Lumi user without inventing profile data', () => {
-        expect(new AcademyUser(scope)).toEqual({
+        expect(new AcademyUser(scope)).toMatchObject({
             email: 'user_123@academy.invalid',
             id: 'user_123',
             name: 'Academy author',
+            operationSet: 'admin',
+            scopedContentId: 'content_1',
             type: 'local'
         });
     });

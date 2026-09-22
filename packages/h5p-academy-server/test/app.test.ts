@@ -10,6 +10,7 @@ const trustedHeaders = {
     'x-academy-lesson-id': 'lesson_1',
     'x-academy-block-id': 'block_1',
     'x-academy-content-id': 'new-content',
+    'x-academy-operation-set': 'admin',
     'x-academy-parent-origin': 'https://workspace.example'
 };
 
