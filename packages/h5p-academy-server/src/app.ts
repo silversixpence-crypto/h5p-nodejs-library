@@ -20,7 +20,7 @@ export interface AcademyH5pRuntime {
         body: unknown,
         scope: AcademyAuthoringScope
     ): Promise<{
-        contentId: string;
+        contentId: string | number;
         metadata: AcademyH5pContentMetadata;
     }>;
 }
@@ -195,13 +195,14 @@ export function createAcademyH5pApp(
                 request.body,
                 scope
             );
-            persistedContentBySession.set(scope.sessionId, saved.contentId);
+            const savedContentId = String(saved.contentId);
+            persistedContentBySession.set(scope.sessionId, savedContentId);
             await options.persistState?.();
             response
                 .status(200)
                 .type('text/plain')
                 .set('Cache-Control', 'private, no-store')
-                .send(JSON.stringify({ contentId: saved.contentId }));
+                .send(JSON.stringify({ contentId: savedContentId }));
         })
     );
 

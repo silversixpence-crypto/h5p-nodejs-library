@@ -106,6 +106,41 @@ describe('Academy H5P runtime', () => {
         expect(persisted).toBe(1);
     });
 
+    it('normalizes numeric Lumi ids before confirming a saved activity', async () => {
+        const runtime = fakeRuntime();
+        runtime.saveContent = async () => ({
+            contentId: 578619162,
+            metadata: {
+                title: 'Release, pause or return?',
+                mainLibrary: 'H5P.MultiChoice'
+            }
+        });
+        const app = createAcademyH5pApp({
+            loadRuntime: async () => runtime,
+            parentOrigin: 'https://academy.example'
+        });
+
+        const saved = await withTrustedHeaders(
+            request(app)
+                .post('/editor/new-content')
+                .send({
+                    library: 'H5P.MultiChoice 1.16',
+                    params: {
+                        metadata: { title: 'Release, pause or return?' },
+                        params: { question: 'What should the operator do?' }
+                    }
+                })
+        );
+        expect(JSON.parse(saved.text)).toEqual({ contentId: '578619162' });
+
+        const confirmation = await withTrustedHeaders(
+            request(app).get('/h5p/saved/578619162')
+        );
+        expect(confirmation.status).toBe(200);
+        expect(confirmation.text).toContain('academy:h5p:saved');
+        expect(confirmation.text).toContain('578619162');
+    });
+
     it('rejects malformed editor payloads before they reach Lumi', async () => {
         const runtime = fakeRuntime();
         runtime.saveContent = jest.fn(runtime.saveContent);
