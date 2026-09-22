@@ -49,6 +49,8 @@ describe('native Lumi integration', () => {
         expect(editor.status).toBe(200);
         expect(editor.text).toContain('window.H5PIntegration');
         expect(editor.text).toContain('class="h5p-editor"');
+        expect(editor.text).toContain('data-ledgerbrain-h5p-theme');
+        expect(editor.text).toContain('border-radius: 999px');
 
         const asset = await scoped(
             request(app).get('/h5p/editor/scripts/h5peditor.js')

@@ -43,9 +43,10 @@ describe('Academy Lumi adapter', () => {
         const ajaxRouter = jest.fn();
         const runtime = createRuntimeAdapter(editor, ajaxRouter as never);
 
-        await expect(runtime.renderEditor('content_1', scope)).resolves.toBe(
-            '<html>native editor</html>'
-        );
+        const rendered = await runtime.renderEditor('content_1', scope);
+        expect(rendered).toContain('data-ledgerbrain-h5p-theme');
+        expect(rendered).toContain('border-radius: 999px');
+        expect(rendered).toContain('native editor');
         await expect(
             runtime.saveContent(
                 'content_1',

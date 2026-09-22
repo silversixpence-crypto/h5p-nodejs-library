@@ -1,6 +1,7 @@
 import type { RequestHandler } from 'express';
 
 import type { AcademyAuthoringScope, AcademyH5pRuntime } from './app';
+import { applyLedgerBrainEditorTheme } from './editor-theme';
 
 interface H5pEditorPort {
     contentStorage: {
@@ -57,8 +58,14 @@ export function createRuntimeAdapter(
             editor.contentStorage.contentExists(contentId),
         getContentMetadata: (contentId) =>
             editor.contentStorage.getMetadata(contentId),
-        renderEditor: (contentId, scope) =>
-            editor.render(contentId, 'en', new AcademyUser(scope)),
+        async renderEditor(contentId, scope) {
+            const html = await editor.render(
+                contentId,
+                'en',
+                new AcademyUser(scope)
+            );
+            return applyLedgerBrainEditorTheme(html);
+        },
         async saveContent(contentId, body, scope) {
             const payload = body as EditorPayload;
             const saved = await editor.saveOrUpdateContentReturnMetaData(
